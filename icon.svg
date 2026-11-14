@@ -1,0 +1,8 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#080809"></rect>
+  <rect x="35" y="35" width="442" height="442" rx="75" fill="#111115" stroke="#a30f27" stroke-width="8"></rect>
+  <path d="M256 95 L290 205 L405 205 L312 275 L347 390 L256 320 L165 390 L200 275 L107 205 L222 205 Z" fill="none" stroke="#e12642" stroke-width="12" stroke-linejoin="round"></path>
+  <path d="M256 155 L275 230 L350 230 L290 275 L310 350 L256 305 L202 350 L222 275 L162 230 L237 230 Z" fill="#a30f27"></path>
+  <text x="256" y="445" text-anchor="middle" font-family="Georgia,serif" font-size="32" letter-spacing="5" fill="#f2eff0">DESIRE</text>
+</svg>
