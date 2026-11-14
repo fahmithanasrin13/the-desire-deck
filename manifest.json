@@ -1,0 +1,21 @@
+
+{
+  "name": "THE DESIRE DECK",
+  "short_name": "Desire Deck",
+  "description": "A private dark romance card game for two.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080809",
+  "theme_color": "#080809",
+  "categories": ["entertainment", "games"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
