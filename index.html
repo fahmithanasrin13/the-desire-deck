@@ -1,0 +1,575 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080809">
+<title>THE DESIRE DECK</title>
+
+<style>
+:root {
+  --black:#080809;
+  --panel:#151519;
+  --grey:#777780;
+  --red:#a30f27;
+  --bright:#e12642;
+  --white:#f2eff0;
+  --line:#34343b;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(ellipse at top,rgba(130,10,30,.2),transparent 45%),var(--black);
+  color:var(--white);
+  font-family:Georgia,serif;
+}
+button{cursor:pointer;font:inherit}
+button:focus-visible{outline:2px solid var(--bright)}
+.app{max-width:1000px;margin:auto;padding:20px}
+header{
+  display:flex;justify-content:space-between;
+  align-items:center;border-bottom:1px solid var(--line);
+  padding:12px 0 18px;
+}
+.brand{font:700 12px Arial;letter-spacing:4px}
+button{
+  border-radius:3px;padding:12px 18px;
+  letter-spacing:1px;
+}
+.ghost{background:transparent;color:white;border:1px solid var(--line)}
+.primary{background:var(--red);color:white;border:1px solid var(--bright)}
+.secondary{background:#202026;color:white;border:1px solid #555}
+.hero{text-align:center;padding:55px 10px 35px}
+.eyebrow{font:11px Arial;letter-spacing:4px;color:#e12642}
+h1{font-size:clamp(42px,8vw,76px);line-height:.95;margin:18px 0}
+.subtitle{font:11px Arial;letter-spacing:4px;color:#aaa}
+.intro{color:#aaa;line-height:1.7;font:14px Arial;max-width:520px;margin:25px auto}
+.section-label{font:11px Arial;letter-spacing:3px;color:#aaa;margin:25px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.mode,.category{
+  background:linear-gradient(145deg,#1d1d23,#0e0e11);
+  color:white;border:1px solid var(--line);
+  padding:22px;text-align:left;min-height:115px;
+}
+.mode:hover,.category:hover{border-color:var(--bright)}
+.kicker{font:10px Arial;letter-spacing:2px;color:#e12642}
+.card-name{display:block;font-size:21px;margin:12px 0 6px}
+.desc{font:12px/1.5 Arial;color:#aaa}
+.category.tempt{border-top:2px solid #c21c38}
+.category.dare{border-top:2px solid #85858e}
+.category.unleash{border-top:2px solid #780c20}
+.category.obsess{border-top:2px solid #aaa}
+.hidden{display:none!important}
+.screen{display:none}
+.screen.active{display:block}
+.rules{text-align:center;color:#777;font:12px/1.7 Arial;margin:30px auto;max-width:650px}
+.game-head{display:flex;justify-content:space-between;align-items:center;margin:30px 0}
+.game-title{font-size:26px;letter-spacing:2px}
+.progress{text-align:right;font:12px Arial;color:#aaa}
+.bar{width:140px;height:4px;background:#333;margin-top:8px}
+.fill{height:100%;width:0;background:var(--bright);transition:.3s}
+.stage{display:flex;align-items:center;flex-direction:column}
+.note{font:10px Arial;letter-spacing:3px;color:#888;margin:12px}
+.scene{width:min(78vw,330px);height:min(112vw,450px);perspective:1100px}
+.playing-card{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;
+  transition:transform .75s;
+  cursor:pointer;
+}
+.playing-card.flipped{transform:rotateY(180deg)}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;
+  border:1px solid #777;border-radius:8px;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  text-align:center;padding:25px;overflow:hidden;
+}
+.back{
+  background:radial-gradient(circle,rgba(161,15,39,.25),transparent 55%),#0c0c10;
+}
+.back:before,.front:before{
+  content:"";position:absolute;inset:14px;
+  border:1px solid rgba(200,30,55,.7);pointer-events:none;
+}
+.back-symbol{font-size:60px;color:#d12645}
+.back-name{font-size:23px;letter-spacing:3px;margin:20px 0}
+.back-sub{font:10px Arial;letter-spacing:3px;color:#aaa}
+.front{
+  transform:rotateY(180deg);
+  background:radial-gradient(ellipse at top,rgba(150,10,35,.25),transparent 60%),#111115;
+}
+.front.secret{
+  background:radial-gradient(circle,rgba(220,15,50,.35),transparent 65%),#09090c;
+}
+.suit{font:10px Arial;letter-spacing:3px;color:#e33b55;z-index:1}
+.number{font:10px Arial;color:#888;margin-top:15px;z-index:1}
+.challenge-title{font-size:30px;margin:18px 0;z-index:1}
+.challenge-text{font:14px/1.7 Arial;color:#eee;z-index:1}
+.hint{font:9px Arial;letter-spacing:2px;color:#999;margin-top:20px;z-index:1}
+.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:22px 0}
+.status{text-align:center;min-height:25px;color:#aaa;font:12px Arial}
+.stats{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;color:#777;font:10px Arial;letter-spacing:1px}
+.completion{text-align:center;padding:50px 15px}
+.completion h2{font-size:35px;color:#e33b55}
+.completion p{font:14px/1.7 Arial;color:#aaa}
+@media(max-width:550px){
+ .grid{grid-template-columns:1fr}
+ .hero{padding-top:38px}
+ .scene{height:min(115vw,430px)}
+ .challenge-title{font-size:25px}
+ .game-title{font-size:19px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+  <div class="brand">✦ THE DESIRE DECK</div>
+  <div>
+    <button class="ghost" onclick="goHome()">HOME</button>
+    <button class="ghost" onclick="resetAll()">RESET</button>
+  </div>
+</header>
+
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="eyebrow">A PRIVATE GAME FOR TWO</div>
+    <h1>THE DESIRE<br>DECK</h1>
+    <div class="subtitle">A DARK ROMANCE CARD GAME</div>
+    <p class="intro">
+      Thirty-six cards. Four categories.
+      One secret desire waiting in every deck.
+    </p>
+  </div>
+
+  <div class="section-label">CHOOSE YOUR GAME MODE</div>
+  <div class="grid">
+    <button class="mode" onclick="startGame('all')">
+      <span class="kicker">36 CARDS · MIXED DECK</span>
+      <span class="card-name">SHUFFLE ALL</span>
+      <span class="desc">Mix all four categories into one surprise deck.</span>
+    </button>
+    <button class="mode" onclick="showCategories()">
+      <span class="kicker">9 CARDS · ONE CATEGORY</span>
+      <span class="card-name">CATEGORY PLAY</span>
+      <span class="desc">Choose one category and shuffle its cards.</span>
+    </button>
+  </div>
+
+  <div id="categoryPicker" class="hidden">
+    <div class="section-label">CHOOSE YOUR CATEGORY</div>
+    <div class="grid">
+      <button class="category tempt" onclick="startGame('category','TEMPT ME')">
+        <span class="kicker">01 · CRIMSON</span>
+        <span class="card-name">TEMPT ME</span>
+        <span class="desc">Kisses, attraction and anticipation.</span>
+      </button>
+      <button class="category dare" onclick="startGame('category','DARE ME')">
+        <span class="kicker">02 · SMOKE</span>
+        <span class="card-name">DARE ME</span>
+        <span class="desc">Bold actions and unexpected dares.</span>
+      </button>
+      <button class="category unleash" onclick="startGame('category','UNLEASH ME')">
+        <span class="kicker">03 · BLOOD RED</span>
+        <span class="card-name">UNLEASH ME</span>
+        <span class="desc">Passion and spontaneous chemistry.</span>
+      </button>
+      <button class="category obsess" onclick="startGame('category','OBSESS ME')">
+        <span class="kicker">04 · ASH</span>
+        <span class="card-name">OBSESS ME</span>
+        <span class="desc">Desire, attention and intimacy.</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="rules">
+    Draw one card at a time. Flip to reveal it.
+    Complete it or pass if either person isn't comfortable.
+    Passed cards return after the remaining cards.
+    Progress is saved in this browser.
+  </div>
+</section>
+
+<section id="game" class="screen">
+  <div class="game-head">
+    <div>
+      <div class="section-label">NOW PLAYING</div>
+      <div class="game-title" id="gameTitle">SHUFFLE ALL</div>
+    </div>
+    <div class="progress">
+      <span id="progressText">0 / 36 completed</span>
+      <div class="bar"><div class="fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="note">YOUR NEXT CARD IS WAITING</div>
+
+    <div class="scene">
+      <div class="playing-card" id="playingCard" onclick="flipCard()">
+        <div class="face back">
+          <div class="back-symbol">✦</div>
+          <div class="back-name">THE DESIRE DECK</div>
+          <div class="back-sub">DRAW · FLIP · DISCOVER</div>
+        </div>
+        <div class="face front" id="front">
+          <div class="suit" id="suit"></div>
+          <div class="number" id="number"></div>
+          <div class="challenge-title" id="title"></div>
+          <div class="challenge-text" id="challenge"></div>
+          <div class="hint" id="hint">A DESIRE AWAITS</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls" id="drawControls">
+      <button class="primary" onclick="drawCard()">DRAW A CARD</button>
+    </div>
+
+    <div class="controls hidden" id="flipControls">
+      <button class="primary" onclick="flipCard()">FLIP CARD</button>
+    </div>
+
+    <div class="controls hidden" id="actionControls">
+      <button class="primary" onclick="completeCard()">COMPLETED</button>
+      <button class="secondary" onclick="passCard()">PASS THIS CARD</button>
+    </div>
+
+    <div class="status" id="status">Shuffle the deck and draw your first card.</div>
+
+    <div class="stats">
+      <span id="remaining">36 REMAINING</span>
+      <span id="done">0 COMPLETED</span>
+      <span id="passed">0 PASSED</span>
+    </div>
+  </div>
+</section>
+
+<section id="complete" class="screen completion">
+  <div class="eyebrow">THE FINAL CARD HAS BEEN DRAWN</div>
+  <h2>THE DECK IS COMPLETE</h2>
+  <p>You've explored every card in this round.</p>
+  <button class="primary" onclick="newRound()">SHUFFLE A NEW ROUND</button>
+  <button class="secondary" onclick="goHome()">BACK HOME</button>
+</section>
+
+</div>
+
+<script>
+const categories = {
+"TEMPT ME":[
+["T01","Pull Me Closer","Pull me towards you, hold my waist and kiss me."],
+["T02","The Neck Tease","Give me slow kisses along my neck, if I'm comfortable."],
+["T03","Hands on Me","Hold me close and gently explore my back with your hands."],
+["T04","The Lap Temptation","Make me sit on your lap and whisper something seductive."],
+["T05","Kiss Trail","Give me five kisses, each in a different place I choose."],
+["T06","The Slow Touch","Slowly trace your fingertips along my arms, shoulders and back."],
+["T07","Against the Wall","Gently bring me close against a wall and kiss me, only if we're both comfortable."],
+["T08","No Escape","Hold me close and kiss me until one of us asks for a pause."]
+],
+"DARE ME":[
+["D01","The Tease","Tease me for one full minute without kissing me."],
+["D02","Your Command","Give me three romantic instructions. I'll follow the ones I'm comfortable with."],
+["D03","The Blindfold Challenge","Blindfold me and surprise me with three different intimate kisses or sensual touches. I have to guess what's coming next."],
+["D04","Don't Move","Hold my wrists gently above my head, move close to me, kiss my neck and collarbone slowly, then trail your kisses down to my chest."],
+["D05","The 30-Second Challenge","Make me blush within 30 seconds without kissing me."],
+["D06","Switch Roles","Let me take complete control of our next romantic moment."],
+["D07","The Mystery Kiss","Close my eyes. Bring your lips close to different parts of my body without actually kissing me. I'll have to guess where you're about to kiss. If I guess correctly, seal it with a kiss."],
+["D08","Take Me by Surprise","Pull me close, pin me gently against a wall, let your hands explore my waist and back, then surprise me with a slow, passionate kiss. Take the lead, but let me guide you too."]
+],
+"UNLEASH ME":[
+["U01","The Passion Rush","Pull me close and give me a passionate kiss."],
+["U02","Against My Heart","Hold me tightly against your chest and kiss my neck."],
+["U03","The Kiss Marathon","Give me ten kisses in ten different places I choose."],
+["U04","No Personal Space","Stay as close to me as possible for two whole minutes."],
+["U05","The Slow Burn","Build anticipation with gentle kisses and slow touches."],
+["U06","The Dance of Desire","Dance with me slowly, keeping our bodies close."],
+["U07","The Sudden Spark","Surprise me with an unexpected romantic kiss."],
+["U08","All In","Spend three uninterrupted minutes exploring what kind of affectionate touches we both enjoy."]
+],
+"OBSESS ME":[
+["O01","Kiss Every Inch","Cover my face, neck and shoulders with slow kisses."],
+["O02","The Body Worship","Make me lie back, slowly kiss along my neck, shoulders and collarbone, then take your time exploring my favourite spots with gentle kisses and touches. Make me feel completely desired."],
+["O03","Make Me Melt","Hold my waist, pull me close and kiss me slowly until I melt into you."],
+["O04","The Favourite Touch","Give me a slow massage, focusing on the areas I choose."],
+["O05","Lips and Whispers","Kiss me between whispers of things you find irresistible about me."],
+["O06","The Temptation Trail","Leave a trail of kisses from my shoulders to my neck."],
+["O07","Completely Yours","Hold me close and explore the affectionate touches we both enjoy for two minutes."],
+["O08","Can't Get Enough","Give me three different passionate kisses, each more intense than the previous one."]
+]
+};
+
+const secret = {
+id:"S25",title:"The Secret Fantasy",
+text:"Reveal one secret fantasy you've always wanted to experience with me, and let's make it our own unforgettable moment. No rules, no challenges — just us.",
+secret:true
+};
+
+let state={
+mode:null,category:null,queue:[],passed:[],
+current:null,revealed:false,completed:[],roundSeen:[]
+};
+
+const STORE="desireDeck_v1";
+
+function save(){
+ localStorage.setItem(STORE,JSON.stringify(state));
+}
+
+function load(){
+ try{
+  const data=JSON.parse(localStorage.getItem(STORE));
+  if(data) state={...state,...data};
+ }catch(e){}
+}
+
+function allCards(){
+ let cards=[];
+ for(const [category,list] of Object.entries(categories)){
+  list.forEach(c=>cards.push({
+   id:c[0],title:c[1],text:c[2],category,secret:false
+  }));
+  cards.push({
+   ...secret,
+   id:"S25-"+category.replaceAll(" ","-"),
+   category
+  });
+ }
+ return cards;
+}
+
+function shuffle(list){
+ const arr=[...list];
+ for(let i=arr.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [arr[i],arr[j]]=[arr[j],arr[i]];
+ }
+ return arr;
+}
+
+function showScreen(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+
+function showCategories(){
+ document.getElementById("categoryPicker").classList.toggle("hidden");
+}
+
+function startGame(mode,category=null){
+ state.mode=mode;
+ state.category=category;
+
+ let cards=allCards();
+ if(mode==="category"){
+  cards=cards.filter(c=>c.category===category);
+ }
+
+ state.queue=shuffle(cards);
+ state.passed=[];
+ state.current=null;
+ state.revealed=false;
+ state.roundSeen=[];
+
+ document.getElementById("gameTitle").textContent=
+  mode==="all"?"SHUFFLE ALL":category;
+
+ resetCard();
+ controls("draw");
+ updateProgress();
+ save();
+ showScreen("game");
+ document.getElementById("status").textContent="Your deck is shuffled. Draw your first card.";
+}
+
+function resetCard(){
+ document.getElementById("playingCard").classList.remove("flipped");
+ document.getElementById("front").classList.remove("secret");
+}
+
+function controls(which){
+ ["draw","flip","action"].forEach(name=>{
+  document.getElementById(name+"Controls").classList.add("hidden");
+ });
+ document.getElementById(which+"Controls").classList.remove("hidden");
+}
+
+function drawCard(){
+ if(state.current) return;
+
+ if(state.queue.length===0){
+  if(state.passed.length){
+   state.queue=shuffle(state.passed);
+   state.passed=[];
+   document.getElementById("status").textContent="Passed cards reshuffled.";
+  }else{
+   showScreen("complete");
+   return;
+  }
+ }
+
+ state.current=state.queue.shift();
+ state.revealed=false;
+
+ if(!state.roundSeen.includes(state.current.id)){
+  state.roundSeen.push(state.current.id);
+ }
+
+ document.getElementById("suit").textContent=
+  state.current.secret?"THE SUPREME SECRET":state.current.category;
+
+ document.getElementById("number").textContent=
+  state.current.secret?"XXV · SECRET":state.current.id;
+
+ document.getElementById("title").textContent=state.current.title;
+ document.getElementById("challenge").textContent=state.current.text;
+ document.getElementById("hint").textContent=
+  state.current.secret?"YOUR PERSONAL DESIRE":"A DESIRE AWAITS";
+
+ document.getElementById("front").classList.toggle("secret",!!state.current.secret);
+
+ resetCard();
+ controls("flip");
+ document.getElementById("status").textContent="Card drawn. Flip to reveal.";
+ updateProgress();
+ save();
+}
+
+function flipCard(){
+ if(!state.current||state.revealed)return;
+
+ state.revealed=true;
+ document.getElementById("playingCard").classList.add("flipped");
+ controls("action");
+
+ document.getElementById("status").textContent=
+  state.current.secret?"The Supreme Secret is yours to discover.":"Complete or pass this card.";
+
+ save();
+}
+
+function completeCard(){
+ if(!state.current)return;
+
+ if(!state.completed.includes(state.current.id)){
+  state.completed.push(state.current.id);
+ }
+
+ state.current=null;
+ state.revealed=false;
+ resetCard();
+ controls("draw");
+
+ document.getElementById("status").textContent="Completed! Draw the next card.";
+ updateProgress();
+ save();
+
+ checkFinished();
+}
+
+function passCard(){
+ if(!state.current)return;
+
+ state.passed.push(state.current);
+ state.current=null;
+ state.revealed=false;
+
+ resetCard();
+ controls("draw");
+
+ document.getElementById("status").textContent="Passed. It will return later.";
+ updateProgress();
+ save();
+
+ checkFinished();
+}
+
+function checkFinished(){
+ if(state.queue.length===0&&state.passed.length===0){
+  showScreen("complete");
+ }
+}
+
+function updateProgress(){
+ const total=state.mode==="all"?36:9;
+ const done=state.roundSeen.filter(id=>state.completed.includes(id)).length;
+
+ document.getElementById("progressText").textContent=
+  done+" / "+total+" completed";
+
+ document.getElementById("progressFill").style.width=
+  (done/total*100)+"%";
+
+ document.getElementById("remaining").textContent=
+  (state.queue.length+(state.current?1:0))+" REMAINING";
+
+ document.getElementById("done").textContent=
+  done+" COMPLETED";
+
+ document.getElementById("passed").textContent=
+  state.passed.length+" PASSED";
+}
+
+function goHome(){
+ showScreen("home");
+}
+
+function newRound(){
+ startGame(state.mode||"all",state.category);
+}
+
+function resetAll(){
+ if(!confirm("Reset all saved Desire Deck progress?"))return;
+
+ localStorage.removeItem(STORE);
+
+ state={
+  mode:null,category:null,queue:[],passed:[],
+  current:null,revealed:false,completed:[],roundSeen:[]
+ };
+
+ showScreen("home");
+}
+
+function restore(){
+ if(!state.mode)return;
+
+ const total=state.queue.length+state.passed.length+(state.current?1:0);
+ if(total===0)return;
+
+ document.getElementById("gameTitle").textContent=
+  state.mode==="all"?"SHUFFLE ALL":state.category;
+
+ updateProgress();
+ showScreen("game");
+
+ if(state.current){
+  document.getElementById("suit").textContent=
+   state.current.secret?"THE SUPREME SECRET":state.current.category;
+  document.getElementById("number").textContent=
+   state.current.secret?"XXV · SECRET":state.current.id;
+  document.getElementById("title").textContent=state.current.title;
+  document.getElementById("challenge").textContent=state.current.text;
+  document.getElementById("front").classList.toggle("secret",!!state.current.secret);
+
+  if(state.revealed){
+   document.getElementById("playingCard").classList.add("flipped");
+   controls("action");
+  }else{
+   controls("flip");
+  }
+ }else{
+  controls("draw");
+ }
+}
+
+load();
+restore();
+</script>
+</body>
+</html>
